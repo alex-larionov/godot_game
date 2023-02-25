@@ -1,5 +1,8 @@
 extends "res://Scripts/Stickman.gd"
 
+onready var tree = $AnimationTree
+onready var playback = tree.get("parameters/playback")
+
 var inventory = {}
 
 signal on_death
@@ -8,6 +11,7 @@ func _ready():
 	self.hp = 90
 	set_start_hp(self.hp, self.max_hp)
 	add_to_group(GlobalVars.entity_gropup)
+	playback.start("Idle")
 
 func pick(item):
 	var it = item.get_item()
@@ -27,6 +31,17 @@ func _process(delta):
 		velocity.x -= speed
 	if Input.is_action_pressed("right"):
 		velocity.x += speed
+	
+	
+	var mouse_dir = position.direction_to(get_global_mouse_position())
+	tree.set("parameters/Idle/blend_position", mouse_dir)
+	tree.set("parameters/Walk/blend_position", mouse_dir)
+	
+	if velocity.x != 0 or velocity.y != 0:
+		playback.travel("Walk")
+	else:
+		playback.travel("Idle")
+	
 	move_and_slide(velocity)
 
 	position.x = clamp(position.x, 0, 10000)
