@@ -18,6 +18,7 @@ config/icon="res://icon.png"
 
 GlobalVars="*res://Scenes/Singletons/GlobalVars.tscn"
 SceneChanger="*res://Scenes/Singletons/SceneChanger.tscn"
+ItemMachine="*res://Scenes/Singletons/ItemMachine.tscn"
 
 [gui]
 

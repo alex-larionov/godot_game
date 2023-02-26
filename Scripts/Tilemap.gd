@@ -1,6 +1,6 @@
 extends Node2D
 
-onready var item = preload("res://Scenes/Item.tscn")
+
 
 func get_player():
 	if has_node("Player"):
@@ -12,22 +12,32 @@ func update_label(value):
 
 
 func _ready():
-	var items = [["apple", 8], ["prut", 8], ["pebble", 8], ["branch", 4]]
+	var items_to_spawn = ItemMachine.get_openworld_items()
+	
 	for i in range(100):
 		randomize()
-		var a = int(rand_range(0, 4))
-		var new_item = item.instance()
-		$Items.add_child(new_item)
-		new_item.set_item(items[a])
-		new_item.position = Vector2(int(rand_range(0, 32 * 44)), int(rand_range(0, 32 * 28)))
+		var a = int(rand_range(0, len(items_to_spawn)))
+		var new_item = ItemMachine.generate_item(items_to_spawn[a])
+		add_item_to_world(new_item, int(rand_range(0, 32 * 44)), int(rand_range(0, 32 * 28)))
+		
 	add_to_group(GlobalVars.saving_group)
 	SceneChanger.game_ready()
+
+
+func add_item_to_world(item, x, y):
+	$Items.add_child(item)
+	item.position = Vector2(x, y)
+
+
+func add_lying_item(i, x, y):
+	var new_item = ItemMachine.generate_item(i.get_item_name(), i.get_amount())
+	add_item_to_world(new_item, x, y)
+
 
 func _unhandled_input(event):
 	if event.is_action_pressed("Alt"):
 		for i in get_tree().get_nodes_in_group(GlobalVars.entity_gropup):
 			i.toggle_hp_bar()
-			
 
 
 func save():

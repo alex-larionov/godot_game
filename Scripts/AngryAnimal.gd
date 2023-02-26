@@ -21,6 +21,10 @@ func _ready():
 	set_start_hp(self.hp, self.max_hp)
 	add_to_group(GlobalVars.entity_gropup)
 	add_to_group(GlobalVars.animal_group)
+	
+	var skin = ItemMachine.generate_inventory_item("wolfskin")
+	self.inventory.add_item(skin)
+	
 
 func _process(delta):
 	if velocity:

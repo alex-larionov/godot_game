@@ -3,23 +3,22 @@ extends "res://Scripts/Stickman.gd"
 onready var tree = $AnimationTree
 onready var playback = tree.get("parameters/playback")
 
-var inventory = {}
-
 signal on_death
 
 func _ready():
 	self.hp = 90
 	set_start_hp(self.hp, self.max_hp)
 	add_to_group(GlobalVars.entity_gropup)
+	create_inventory()
 	playback.start("Idle")
+	
 
 func pick(item):
-	var it = item.get_item()
-	if it in inventory.keys():
-		inventory[it][0] += item.get_amount()
-	else:
-		inventory[it] = [item.get_amount(), item.get_item_stack()]
-	ui.update_inventory(inventory)
+	var is_picked = .pick(item)
+	if is_picked:
+		ui.update_inventory(inventory.get_items())
+	return is_picked
+
 
 func _process(delta):
 	var velocity = Vector2()
@@ -53,7 +52,7 @@ func _process(delta):
 
 func _unhandled_input(event):
 	if event.is_action_pressed("inventory"):
-		ui.toggle_inventory(inventory)
+		ui.toggle_inventory(inventory.get_items())
 	if event.is_action_pressed("left_click"):
 		var a = load("res://Scenes/DamageArea.tscn").instance()
 		a.set_damage(10)
@@ -67,10 +66,8 @@ func die():
 
 func save():
 	var data = .save()
-	data["inventory"] = inventory
 	return data
 	
 	
 func load_from_data(data):
 	.load_from_data(data)
-	inventory = data["inventory"].duplicate(true)
