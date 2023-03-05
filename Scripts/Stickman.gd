@@ -23,6 +23,7 @@ func _ready():
 func create_inventory():
 	inventory = pre_inv.instance()
 	add_child(inventory)
+	inventory.set_inv_owner(self)
 
 
 func pick(item):
@@ -56,6 +57,11 @@ func reduce_hp(val):
 		die()
 		return false
 	return true
+
+
+func increase_hp(val):
+	self.hp = min(self.hp + val, self.max_hp)
+	update_hp()
 
 
 func save():
